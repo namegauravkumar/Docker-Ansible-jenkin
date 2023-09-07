@@ -1,18 +1,17 @@
-FROM ubuntu:22.04
+FROM centos:latest
 
-RUN apt update -y
-RUN apt upgrade -y
-RUN apt install systemctl -y
-RUN apt install -y nginx \
+RUN cd /etc/yum.repos.d/
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+RUN yum -y install nginx  \
         zip \
 unzip
-RUN systemctl start nginx
 RUN systemctl enable nginx
-ADD https://www.free-css.com/assets/files/free-css-templates/download/page295/handtime.zip /var/www/html/
-WORKDIR /var/www/html
-RUN unzip handtime.zip
-RUN cp -rvf handtime-html/* .
-RUN rm -rf handtime.zip
-RUN systemctl restart nginx
+ADD https://www.free-css.com/assets/files/free-css-templates/download/page295/kider.zip /usr/share/nginx/html/
+WORKDIR /usr/share/nginx/html
+RUN unzip kider.zip
+RUN cp -rvf preschool-website-template/* .
+RUN rm -rf kider.zip
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
